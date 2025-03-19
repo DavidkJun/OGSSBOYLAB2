@@ -4,24 +4,58 @@ import (
 	"flag"
 	"fmt"
 	lab2 "github.com/roman-mazur/architecture-lab-2"
-)
-
-var (
-	inputExpression = flag.String("e", "", "Expression to compute")
-	// TODO: Add other flags support for input and output configuration.
+	"io"
+	"os"
+	"strings"
 )
 
 func main() {
+	expression := flag.String("e", "", "Prefix expression to convert")
+	fileInput := flag.String("f", "", "File containing prefix expression")
+	outputFile := flag.String("o", "", "File to write the result")
 	flag.Parse()
 
-	// TODO: Change this to accept input from the command line arguments as described in the task and
-	//       output the results using the ComputeHandler instance.
-	//       handler := &lab2.ComputeHandler{
-	//           Input: {construct io.Reader according the command line parameters},
-	//           Output: {construct io.Writer according the command line parameters},
-	//       }
-	//       err := handler.Compute()
+	if *expression != "" && *fileInput != "" {
+		fmt.Fprintln(os.Stderr, "Error: cannot use both -e and -f options")
+		os.Exit(1)
+	}
 
-	res, _ := lab2.PrefixToInfix("+ 2 2")
-	fmt.Println(res)
+	var input io.Reader
+	if *expression != "" {
+		input = strings.NewReader(*expression)
+	} else if *fileInput != "" {
+		file, err := os.Open(*fileInput)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error opening file: %v\n", err)
+			os.Exit(1)
+		}
+		defer file.Close()
+		input = file
+	} else {
+		fmt.Fprintln(os.Stderr, "Error: no input provided")
+		os.Exit(1)
+	}
+
+	var output io.Writer
+	if *outputFile != "" {
+		file, err := os.Create(*outputFile)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error creating file: %v\n", err)
+			os.Exit(1)
+		}
+		defer file.Close()
+		output = file
+	} else {
+		output = os.Stdout
+	}
+
+	handler := &lab2.ComputeHandler{
+		Input:  input,
+		Output: output,
+	}
+
+	if err := handler.Compute(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
+	}
 }
