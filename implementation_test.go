@@ -17,8 +17,8 @@ func TestPrefixToInfix(t *testing.T) {
 		// Прості вирази з 2-3 операндами
 		{
 			name:     "simple addition",
-			input:    "+ 2 3",
-			expected: "(2 + 3)",
+			input:    "+ 2 4",
+			expected: "(2 + 4)",
 			err:      nil,
 		},
 		{
@@ -101,7 +101,7 @@ func ExamplePrefixToInfix() {
 		input    string
 		expected string
 	}{
-		{"+ 2 3", "(2 + 3)"},
+		{"+ 2 4", "(2 + 4)"},
 		{"* + 2 3 - 4 1", "((2 + 3) * (4 - 1))"},
 		{"+ 2", ""},
 		{"+ 2 a", ""},
@@ -114,7 +114,7 @@ func ExamplePrefixToInfix() {
 	}
 
 	// Output:
-	// (2 + 3)
+	// (2 + 4)
 	// ((2 + 3) * (4 - 1))
 	//
 	//
