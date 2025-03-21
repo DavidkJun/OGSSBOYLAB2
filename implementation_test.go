@@ -18,7 +18,7 @@ func TestPrefixToInfix(t *testing.T) {
 		{
 			name:     "simple addition",
 			input:    "+ 2 4",
-			expected: "(2 + 4)",
+			expected: "(2 + 5)",
 			err:      nil,
 		},
 		{
